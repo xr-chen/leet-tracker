@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="form-group">
+    <label for="name">Login</label>
+    <input type="text" class="form-control" name="name" ng-model="formData.email">
+    <br/>
+    <input type="password" class="form-control" name="password" ng-model="formData.password">
+</div>
+
+<a ng-click="login(formData)" class="btn btn-block btn-info">Login</a>
+</br>
+<a ui-sref="signup">Signup</a>
+
+</body>
+</html>
