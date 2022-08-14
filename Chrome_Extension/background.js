@@ -2,31 +2,19 @@ console.log("background ran");
 let dev = true;
 let domain = dev ? "http://localhost:8000/" : "https://myleetcodetracker.com/";
 
-
-// let key = 'user';
-// let value = 0;
-// chrome.storage.local.set({[key]:value}, function() {
-//     console.log('Value is set to ' + 0);
-// });
-//
-// chrome.storage.local.get([key], function(result) {
-//     console.log('Value currently is ' + result[key]);
-// });
-
-ajaxCall("GET", "user/me", {}, getStorageItem('user') ? getStorageItem('user').token : "", function (response) {
-    console.log("response from server is: ", response);
-    console.log("token is: ", getStorageItem('user'));
-});
+getTokenAndCall('user');
 
 function ajaxCall(method, path, data, token, callback){
     fetch(domain+path, {
         method: method,
         headers: {
-            Authorization: `token ${token}`,
-            Accept: 'application/json',
+            // Authorization: `token ${token}`,
+            token: token,
+            'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         ...(method!='GET') && {body: JSON.stringify(data)}
+        // body: JSON.stringify(data)
 
 })
     .then(res => res.json())
@@ -63,6 +51,9 @@ chrome.runtime.onMessage.addListener(
                     sendResponse(response);
                 });
                 return true;
+            case "tag":
+                console.log("get question id and name: ", message.data);
+                return true;
             default:
                 console.log("couldn't find matching case");
         }
@@ -78,18 +69,16 @@ function setStorageItem(varName, data) {
     }
 }
 
-function getStorageItem(varName) {
-    let res = {};
+function getTokenAndCall(varName, callback) {
+    console.log(typeof callback);
     chrome.storage.local.get([varName], function (result) {
-        Object.assign(res, JSON.parse(result[varName]));
-        console.log("data in storage api loaded: ", Object.keys(res));
-    });
-    console.log("Return vals are: ", Object.keys(res));
-    return res;
-}
+        userData = JSON.parse(result[varName]);
 
-function getStorageValuePromise(key) {
-    return new Promise((resolve) => {
-        chrome.storage.sync.get([key], resolve);
+        // ajaxCall("GET", "user/me", {}, userData ? userData.token : "", function (response) {
+        //     console.log("response from server is: ", response);
+        // });
+        ajaxCall("GET", "user/me", {}, userData ? userData.token : "", function (response) {
+            console.log("response from server is: ", response);
+        });
     });
 }

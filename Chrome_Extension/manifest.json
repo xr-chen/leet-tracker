@@ -5,10 +5,12 @@
   "manifest_version": 3,
   "content_scripts": [
     {
-      "matches": ["https://leetcode.com/*"],
+      "matches": ["https://leetcode.com/problems/*"],
+      "run_at": "document_end",
       "js": ["js/lib/jquery-3.6.0.min.js", "js/app/content.js"]
     }
   ],
+  "host_permissions": ["https://leetcode.com/problems/*"],
   "background": {
     "service_worker": "background.js"
   },

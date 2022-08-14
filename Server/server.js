@@ -24,9 +24,9 @@ app.use(cors({origin: "*"}))
 
 app.use("/user", user);
 
-app.post("/save-products", (req, res) => {
-    console.log("req.body in save=products route: ", req.body);
-    res.send('all good in the hood');
+app.post("/debug", (req, res) => {
+    console.log("req.body in debug route: ", req.header("token"));
+    res.send({'msg': 'all good in the hood'});
 })
 
 const port = process.env.PORT || 8000;

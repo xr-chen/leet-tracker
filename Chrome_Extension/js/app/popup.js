@@ -32,7 +32,8 @@ myleetcodetracker.controller("PopupCtrl", ['$scope', '$state', function ($scope,
             function (response) {
                 console.log("response from background is: ", response);
                 if (response.user) {
-                    $scope.name = response.user.username;
+                    // $scope.name = response.user.username;
+                    $scope.name = "welcome";
                     $state.go('welcome');
                 }
             }
