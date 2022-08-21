@@ -32,8 +32,7 @@ myleetcodetracker.controller("PopupCtrl", ['$scope', '$state', function ($scope,
             function (response) {
                 console.log("response from background is: ", response);
                 if (response.user) {
-                    // $scope.name = response.user.username;
-                    $scope.name = "welcome";
+                    $scope.name = response.user.username;
                     $state.go('welcome');
                 }
             }
@@ -50,6 +49,15 @@ myleetcodetracker.controller("PopupCtrl", ['$scope', '$state', function ($scope,
                 }
             }
         )
+    }
+
+    $scope.getName = function() {
+        chrome.runtime.sendMessage({type: "check", data: ""}, function (response) {
+            if (response && response.username) {
+                $scope.name = response.username;
+                $state.go("welcome");
+            }
+        });
     }
 }])
 

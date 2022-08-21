@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require("mongoose");
 const user = require("./routes/user");
+const progress = require("./routes/records")
+const MongoClient = require("mongodb").MongoClient;
 
 const cors = require('cors');
 require('dotenv').config();
@@ -21,8 +23,8 @@ app.use(bodyParser.json({limit: '200mb', extended: true}));
 app.use(bodyParser.urlencoded({limit: '200mb', extended: true}));
 
 app.use(cors({origin: "*"}))
-
 app.use("/user", user);
+app.use("/record", progress);
 
 app.post("/debug", (req, res) => {
     console.log("req.body in debug route: ", req.header("token"));

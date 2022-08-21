@@ -2,8 +2,6 @@ console.log("background ran");
 let dev = true;
 let domain = dev ? "http://localhost:8000/" : "https://myleetcodetracker.com/";
 
-getTokenAndCall('user');
-
 function ajaxCall(method, path, data, token, callback){
     fetch(domain+path, {
         method: method,
@@ -26,7 +24,6 @@ function ajaxCall(method, path, data, token, callback){
         callback(error)
     });
 }
-
 
 
 chrome.runtime.onMessage.addListener(
@@ -53,12 +50,19 @@ chrome.runtime.onMessage.addListener(
                 return true;
             case "tag":
                 console.log("get question id and name: ", message.data);
+                ajaxCall("POST", "record/write", message.data, "", (response) => {
+                    console.log("response after populating record: ", response);
+                })
+                return true;
+            case "check":
+                getTokenAndCall("user", sendResponse)
                 return true;
             default:
                 console.log("couldn't find matching case");
         }
     }
 )
+
 
 function setStorageItem(varName, data) {
     console.log("varName: ", varName);
@@ -69,16 +73,17 @@ function setStorageItem(varName, data) {
     }
 }
 
+
 function getTokenAndCall(varName, callback) {
-    console.log(typeof callback);
     chrome.storage.local.get([varName], function (result) {
         userData = JSON.parse(result[varName]);
-
-        // ajaxCall("GET", "user/me", {}, userData ? userData.token : "", function (response) {
-        //     console.log("response from server is: ", response);
-        // });
         ajaxCall("GET", "user/me", {}, userData ? userData.token : "", function (response) {
             console.log("response from server is: ", response);
+            if (response && response.username) {
+                callback(response);
+            } else {
+                callback();
+            }
         });
     });
 }
